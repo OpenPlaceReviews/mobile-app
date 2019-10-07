@@ -20,10 +20,12 @@ class POIContextMenuBuilder extends ContextMenuBuilder {
     final colorOpen = OPRColors.ctxMenuAmenityOpenedTextColor;
     final colorClosed = OPRColors.ctxMenuAmenityClosedTextColor;
     final spans = <TextSpan>[];
-    for (var info in openingHoursInfo) {
-      spans.add(
-        TextSpan(text: info.getInfo(), style: TextStyle(color: info.isOpened() ? colorOpen : colorClosed)),
-      );
+    if (openingHoursInfo != null) {
+      for (var info in openingHoursInfo) {
+        spans.add(
+          TextSpan(text: info.getInfo(), style: TextStyle(color: info.isOpened() ? colorOpen : colorClosed)),
+        );
+      }
     }
     if (spans.isNotEmpty) {
       return RichText(
