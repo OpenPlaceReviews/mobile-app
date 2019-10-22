@@ -73,19 +73,8 @@ class POI {
     num id = num.parse(idProp);
     LatLng location = LatLng(double.parse(latProp), double.parse(lonProp));
     var tags = <String, String>{};
-    if (tagsProp != null && tagsProp is String) {
-      for (var s in tagsProp.trim().split(",")) {
-        if (s.startsWith("{")) {
-          s = s.substring(1);
-        } else if (s.endsWith("}")) {
-          s = s.substring(0, s.length - 1);
-        }
-        s = s.trim();
-        var tagValue = s.split("=");
-        if (tagValue.length == 2) {
-          tags[tagValue[0]] = tagValue[1];
-        }
-      }
+    if (tagsProp != null && tagsProp is Map) {
+      tagsProp.forEach((k,v) => tags[k] = v);
     }
     int version = int.parse(versionProp);
     return new POI(changeset, id, location, osmTagProp, osmValueProp, tags,

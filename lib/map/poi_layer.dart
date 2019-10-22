@@ -16,8 +16,7 @@ class POILayerPluginOptions extends LayerOptions {
 
 class POILayerPlugin implements MapPlugin {
   @override
-  Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<Null> stream) {
+  Widget createLayer(LayerOptions options, MapState mapState, Stream<Null> stream) {
     if (options is POILayerPluginOptions) {
       return _POILayer(mapState, stream, options.tileProvider);
     }
@@ -103,10 +102,8 @@ class _POILayerState extends State<_POILayer> {
           while (_normalizedLatitude(lat) <= bottom) {
             var lon = left;
             while (_normalizedLongitude(lon) <= right) {
-              var tileId = OLCUtils.encode(
-                  _normalizedLatitude(lat), _normalizedLongitude(lon));
-              var poiTile =
-                  widget.tileProvider.getPOITile(tileId, _onTileReady);
+              var tileId = OLCUtils.encode(_normalizedLatitude(lat), _normalizedLongitude(lon));
+              var poiTile = widget.tileProvider.getPOITile(tileId, _onTileReady);
               if (poiTile != null) {
                 for (final poi in poiTile.poiList) {
                   try {
@@ -114,41 +111,63 @@ class _POILayerState extends State<_POILayer> {
                     if (!_boundsContainsPOI(pos)) {
                       continue;
                     }
-                    pos = pos.multiplyBy(map.getZoomScale(map.zoom, map.zoom)) -
-                        map.getPixelOrigin();
+                    pos = pos.multiplyBy(map.getZoomScale(map.zoom, map.zoom)) - map.getPixelOrigin();
 
                     var pixelPosX = pos.x - imageSize / 2;
                     var pixelPosY = pos.y - imageSize / 2;
 
                     var mapImgName = poi.getMapImgName();
 
-                    markers.add(
-                      Positioned(
-                        width: imageSize,
-                        height: imageSize,
-                        left: pixelPosX,
-                        top: pixelPosY,
-                        child: Container(
-                          child: GestureDetector(
-                            onTap: () {
-                              _onMarkerTapped(context, poi);
-                            },
-                            child: Stack(
-                              children: <Widget>[
-                                Center(
-                                  child: Image(
-                                      image: AssetImage(
-                                          "assets/map/h_white_orange_poi_shield.png")),
-                                ),
-                                Center(
-                                  child: Image(image: AssetImage(mapImgName)),
-                                ),
-                              ],
+                    if (map.zoom > 16) {
+                      markers.add(
+                        Positioned(
+                          width: imageSize,
+                          height: imageSize,
+                          left: pixelPosX,
+                          top: pixelPosY,
+                          child: Container(
+                            child: GestureDetector(
+                              onTap: () {
+                                _onMarkerTapped(context, poi);
+                              },
+                              child: Stack(
+                                children: <Widget>[
+                                  Center(
+                                    child: Image(image: AssetImage("assets/map/h_white_orange_poi_shield.png")),
+                                  ),
+                                  Center(
+                                    child: Image(image: AssetImage(mapImgName)),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
+                      );
+                    } else {
+                      markers.add(
+                        Positioned(
+                          width: imageSize,
+                          height: imageSize,
+                          left: pixelPosX,
+                          top: pixelPosY,
+                          child: Container(
+                            child: GestureDetector(
+                              onTap: () {
+                                _onMarkerTapped(context, poi);
+                              },
+                              child: Stack(
+                                children: <Widget>[
+                                  Center(
+                                    child: Image(image: AssetImage("assets/map/map_white_orange_poi_shield_small.png")),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
                   } catch (e) {
                     continue;
                   }

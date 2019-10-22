@@ -25,7 +25,7 @@ abstract class POITileProvider {
   void dispose();
 
   String getTileUrl(String tileId) {
-    return "https://dev.openplacereviews.org/api/places/geojson-by-id?tileId=" +
+    return "https://r1.openplacereviews.org/api/public/geo?tileid=" +
         tileId;
   }
 }
